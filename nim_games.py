@@ -2,17 +2,16 @@
 # -*- coding: utf-8 -*-
 
 """
-Jeux  de Nim (variante simple et de Marienbad)
+Jeux  de Nim : variante simple
 """
 
 
-def ask_players():
+def get_players_names():
     """
     Prompt two players to enter their names.
     This function asks for the names of two players via user input.
 
-    Returns:
-        tuple: A tuple containing the names of player 1 and player 2 (player_1, player_2).
+    :returns: tuple: A tuple containing the names of player 1 and player 2 (player_1, player_2).
     """
     player_1 = input("Joueur 1 : Saisissez votre nom ? ")
     player_2 = input("Joueur 2 : Saisissez votre nom ? ")
@@ -20,26 +19,28 @@ def ask_players():
     return player_1, player_2
 
 def ask_first_player(player_1, player_2):
+    """
+    Prompts the user to choose which player goes first.
+
+    :param player_1: str: The name of player 1.
+    :param player_2: str: The name of player 2.
+    :returns: str: The name of the player who will play first.
+    """
     first_player = ""
     while first_player not in [player_1, player_2]:
         first_player = input(f"Qui commence ? ({player_1} ou {player_2}) : ").strip()
 
-    if first_player == player_1:
-            return player_1
-    else:
-            return player_2
+    return first_player
 
 
-def ask_number_of_sticks(player, min_int, max_int):
+def ask_number_of_sticks(player, min_sticks, max_sticks):
     """
-    Ask the given player how many sticks they want to take.
-    Prompts the player to input a number of sticks to remove, ensuring the input
-    is a valid positive integer within the allowed range.
+    Ask the player how many sticks they want to take, ensuring valid input.
 
     :param player: str: The name of the current player.
-    :param min_int: int: The minimum number of sticks the player is allowed to take.
-    :param max_int: int: The maximum number of sticks the player is allowed to take.
-    :return: int: A valid number of sticks chosen by the player, between min_int and max_int (inclusive).
+    :param min_sticks: int: Minimum number of sticks the player can take.
+    :param max_sticks: int: Maximum number of sticks the player can take.
+    :return: int: A valid number of sticks chosen by the player, between min_sticks and max_sticks (inclusive).
     """
     valid_nb = False
     number = None
@@ -49,28 +50,28 @@ def ask_number_of_sticks(player, min_int, max_int):
         number_str = input().strip()
         if number_str.isdigit():
             number = int(number_str)
-            valid_nb = (min_int <= number <= max_int)
+            valid_nb = (min_sticks <= number <= max_sticks)
             if not valid_nb:
-                print(f"Choisissez un nombre entre {min_int} et {max_int}")
+                print(f"Choisissez un nombre entre {min_sticks} et {max_sticks}")
         else:
             print("Merci de saisir un nombre.")
     return number
 
 
-def display_player_turn(current_player, user_sticks, total_sticks):
+def display_player_turn(player, user_sticks, total_sticks):
     """
     Display the action taken by the player and the number of sticks remaining.
 
-    :param current_player: str: The name of the current player.
+    :param player: str: The name of the current player.
     :param user_sticks: int: The number of sticks the player chose to remove.
     :param total_sticks: int: The total number of sticks before the move.
     """
-    print(f"{current_player}, vous avez retiré {user_sticks} allumettes")
+    print(f"{player}, vous avez retiré {user_sticks} allumettes")
 
     if total_sticks > 1:
         print(f"Total d'allumettes restantes : {total_sticks - user_sticks}")
     else:
-        print(f"Il reste une allumette, {current_player} vous avez perdu")
+        print(f"Il reste une allumette, {player} vous avez perdu")
 
 
 def subtract_sticks(nb_sticks, total_sticks):
@@ -86,19 +87,20 @@ def subtract_sticks(nb_sticks, total_sticks):
 
 def player_turn(player, total_sticks):
     """
-    Handle a complete turn for one player: ask for a move, display it, and update the total.
+    Execute a player's turn: ask how many sticks to take, show the result, and update the total.
+
     :param player: The name of the player taking the turn.
     :param total_sticks: The current number of sticks in the game.
     :return: int: The updated total number of sticks after the player's move.
     """
-    player_choice = ask_number_of_sticks(player, 1, 4)
-    display_player_turn(player, player_choice, total_sticks)
-    return subtract_sticks(player_choice, total_sticks)
+    sticks_removed = ask_number_of_sticks(player, 1, 4)
+    display_player_turn(player, sticks_removed, total_sticks)
+    return subtract_sticks(sticks_removed, total_sticks)
 
 
 if __name__ == '__main__':
     total_sticks_in_game = 21
-    p1, p2 = ask_players()
+    p1, p2 = get_players_names()
     current_player = ask_first_player(p1, p2)
 
     second_player = p2 if current_player == p1 else p1
