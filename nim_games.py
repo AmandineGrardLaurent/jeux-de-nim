@@ -2,9 +2,15 @@
 # -*- coding: utf-8 -*-
 
 """
-Jeux  de Nim : variante simple
+Jeu de Nim : Variante simple avec 21 allumettes.
+Deux joueurs (ou un joueur contre l'ordinateur) retirent à tour de rôle entre 1 et 4 allumettes.
+Celui qui est forcé de prendre la dernière allumette perd la partie.
 """
+import random
 
+TOTAL_STICKS = 21
+MIN_REMOVE = 1
+MAX_REMOVE = 4
 
 def get_players_names():
     """
@@ -13,18 +19,22 @@ def get_players_names():
 
     :returns: tuple: A tuple containing the names of player 1 and player 2 (player_1, player_2).
     """
-    player_1 = input("Joueur 1 : Saisissez votre nom ? ")
-    player_2 = input("Joueur 2 : Saisissez votre nom ? ")
+    player_1 = input("Joueur 1 : Saisissez votre nom ? ").strip()
+    player_2 = ""
+
+    while player_2.lower() not in ["computer", "ordinateur"] and not player_2:
+        player_2 = input("Joueur 2 : Saisissez votre nom ? ").strip()
 
     return player_1, player_2
 
+
 def ask_first_player(player_1, player_2):
     """
-    Prompts the user to choose which player goes first.
+    Ask which player should start the game.
 
-    :param player_1: str: The name of player 1.
-    :param player_2: str: The name of player 2.
-    :returns: str: The name of the player who will play first.
+    :param player_1: str - Name of the first player.
+    :param player_2: str - Name of the second player.
+    :return: str - Name of the player who will start the game.
     """
     first_player = ""
     while first_player not in [player_1, player_2]:
@@ -35,12 +45,13 @@ def ask_first_player(player_1, player_2):
 
 def ask_number_of_sticks(player, min_sticks, max_sticks):
     """
-    Ask the player how many sticks they want to take, ensuring valid input.
+     Prompt the player to choose how many matches to remove.
+    Ensures the input is valid and within the allowed range.
 
-    :param player: str: The name of the current player.
-    :param min_sticks: int: Minimum number of sticks the player can take.
-    :param max_sticks: int: Maximum number of sticks the player can take.
-    :return: int: A valid number of sticks chosen by the player, between min_sticks and max_sticks (inclusive).
+    :param player: str - The name of the current player.
+    :param min_sticks: int - Minimum number of matches allowed to remove.
+    :param max_sticks: int - Maximum number of matches allowed to remove.
+    :return: int - Valid number of matches chosen by the player.
     """
     valid_nb = False
     number = None
@@ -70,48 +81,54 @@ def display_player_turn(player, user_sticks, total_sticks):
 
     if total_sticks > 1:
         print(f"Total d'allumettes restantes : {total_sticks - user_sticks}")
+        print("-" * 50)
     else:
         print(f"Il reste une allumette, {player} vous avez perdu")
 
 
-def subtract_sticks(nb_sticks, total_sticks):
+def player_turn(player, total_sticks, sticks_removed):
     """
-    Subtract the specified number of sticks from the total.
-    :param nb_sticks: The number of sticks to subtract.
-    :param total_sticks: The current total number of sticks.
-    :return: int: The new total after subtraction.
+    Execute a player's turn by displaying the move and updating the stick count.
+
+    :param player: str - Name of the player.
+    :param total_sticks: int - Current total of remaining sticks.
+    :param sticks_removed: int - Number of sticks the player chooses to remove.
+    :return: int - Updated number of remaining sticks after the move.
     """
-    total_sticks = total_sticks - nb_sticks
+    display_player_turn(player, sticks_removed, total_sticks)
+    total_sticks -= sticks_removed
     return total_sticks
 
 
-def player_turn(player, total_sticks):
-    """
-    Execute a player's turn: ask how many sticks to take, show the result, and update the total.
-
-    :param player: The name of the player taking the turn.
-    :param total_sticks: The current number of sticks in the game.
-    :return: int: The updated total number of sticks after the player's move.
-    """
-    sticks_removed = ask_number_of_sticks(player, 1, 4)
-    display_player_turn(player, sticks_removed, total_sticks)
-    return subtract_sticks(sticks_removed, total_sticks)
-
-
 if __name__ == '__main__':
-    total_sticks_in_game = 21
+    total_sticks_in_game = TOTAL_STICKS
     p1, p2 = get_players_names()
     current_player = ask_first_player(p1, p2)
+    user_removed_sticks_history = []
 
+    # Determine who is the second player
     second_player = p2 if current_player == p1 else p1
 
     while total_sticks_in_game > 1:
-        total_sticks_in_game = player_turn(current_player, total_sticks_in_game)
+        if current_player.lower() == "ordinateur":
+            # Computer player's turn
+            if user_removed_sticks_history:
+                computer_removed_sticks = 5 - user_removed_sticks_history[-1]
+            else:
+                computer_removed_sticks = random.randint(MIN_REMOVE, MAX_REMOVE)
 
-        if total_sticks_in_game == 1:
+            total_sticks_in_game = player_turn(current_player, total_sticks_in_game, computer_removed_sticks)
+        else:
+            # Human player's turn
+            sticks_removed = ask_number_of_sticks(current_player, MIN_REMOVE, MAX_REMOVE)
+            total_sticks_in_game= player_turn(current_player, total_sticks_in_game, sticks_removed)
+            user_removed_sticks_history.append(sticks_removed)
+
+        if total_sticks_in_game <= 1:
             print(f"Il ne reste qu'une allumette. {second_player} a perdu !")
+            print(f"{current_player} a gangé le jeu ! 🎉")
             break
-
+        # Switch players
         current_player, second_player = second_player, current_player
 
 
