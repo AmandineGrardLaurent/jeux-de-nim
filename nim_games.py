@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
         if total_sticks_in_game <= 1:
             print(f"Il ne reste qu'une allumette. {second_player} a perdu !")
-            print(f"{current_player} a gangé le jeu ! 🎉")
+            print(f"{current_player} a gagné le jeu ! 🎉")
             break
         # Switch players
         current_player, second_player = second_player, current_player
