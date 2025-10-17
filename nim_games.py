@@ -109,7 +109,10 @@ def nim_basic_game():
     # Determine who is the second player
     second_player = p2 if current_player == p1 else p1
 
+    print("-" * 50)
+
     while total_sticks_in_game > 1:
+        display_sticks(total_sticks_in_game)
         if current_player.lower() == "ordinateur":
             # Computer player's turn
             if user_removed_sticks_history:
@@ -149,6 +152,17 @@ def ask_pile_of_sticks(pile_history):
             print("Merci de saisir un nombre.")
 
     return number
+
+
+def display_sticks(total_sticks):
+    """
+    Displays the current number of sticks in the game using vertical bars.
+
+    :param total_sticks: int - Current total of remaining sticks.
+    """
+    for _ in range(total_sticks):
+        print("|", end="")
+    print("")
 
 
 if __name__ == '__main__':
