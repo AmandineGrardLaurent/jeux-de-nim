@@ -100,7 +100,7 @@ def player_turn(player, total_sticks, sticks_removed):
     return total_sticks
 
 
-if __name__ == '__main__':
+def nim_basic_game():
     total_sticks_in_game = TOTAL_STICKS
     p1, p2 = get_players_names()
     current_player = ask_first_player(p1, p2)
@@ -121,7 +121,7 @@ if __name__ == '__main__':
         else:
             # Human player's turn
             sticks_removed = ask_number_of_sticks(current_player, MIN_REMOVE, MAX_REMOVE)
-            total_sticks_in_game= player_turn(current_player, total_sticks_in_game, sticks_removed)
+            total_sticks_in_game = player_turn(current_player, total_sticks_in_game, sticks_removed)
             user_removed_sticks_history.append(sticks_removed)
 
         if total_sticks_in_game <= 1:
@@ -131,4 +131,27 @@ if __name__ == '__main__':
         # Switch players
         current_player, second_player = second_player, current_player
 
+
+def ask_pile_of_sticks(pile_history):
+    valid_nb = False
+    number = None
+
+    print("Dans quel tas souhaitez-vous prendre des allumettes ?")
+
+    while not valid_nb:
+        pile_nb_str = input().strip()
+        if pile_nb_str.isdigit():
+            number = int(pile_nb_str)
+            valid_nb = (number <= len(pile_history))
+            if not valid_nb:
+                print(f"Choisissez un autre tas d'allumettes")
+        else:
+            print("Merci de saisir un nombre.")
+
+    return number
+
+
+if __name__ == '__main__':
+
+    nim_basic_game()
 
