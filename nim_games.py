@@ -154,18 +154,31 @@ def ask_pile_of_sticks(pile_history):
     return number
 
 
+def display_sticks_by_pile(pile_history):
+    """
+    Display the current number of sticks for each pile using vertical bars.
+
+    :param pile_history: list of int - The list of remaining sticks in each pile.
+    """
+    for pile in range(0, len(pile_history)):
+        print(f"Pile n°{pile + 1} -> ", end="")
+        print("|" * pile_history[pile])
+    print("")
+
+
 def display_sticks(total_sticks):
     """
-    Displays the current number of sticks in the game using vertical bars.
+    Display the total number of sticks using vertical bars.
 
     :param total_sticks: int - Current total of remaining sticks.
     """
-    for _ in range(total_sticks):
-        print("|", end="")
-    print("")
+    print("-> " + "|" * total_sticks)
+
 
 
 if __name__ == '__main__':
 
-    nim_basic_game()
+    display_sticks_by_pile([1, 7, 5])
+    display_sticks(6)
+    #nim_basic_game()
 
