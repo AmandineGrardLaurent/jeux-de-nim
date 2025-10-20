@@ -12,7 +12,7 @@ Tu peux affronter un autre joueur ou l'ordinateur (IA basique).
 
 ## 📂 Structure du jeu
 
-- `nim.py` : fichier principal contenant toute la logique du jeu.
+- `nim_games.py` : fichier principal contenant toute la logique du jeu.
 - Jeu en mode **texte** dans le terminal.
 
 ---
@@ -26,7 +26,7 @@ Tu peux affronter un autre joueur ou l'ordinateur (IA basique).
 ### ▶️ Exécution
 
 ```bash
-python nim.py
+python nim_games.py
 ```
 ---
 # 🕹️ Règles du jeu
